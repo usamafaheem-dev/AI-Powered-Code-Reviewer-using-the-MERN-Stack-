@@ -45,7 +45,7 @@ const App = () => {
   };
 
   return (
-    <main className="w-full min-h-screen bg-gradient-to-br from-gray-800 to-gray-900 p-4 md:p-5 flex flex-col md:flex-row gap-4 overflow-hidden">
+    <main className="w-full min-h-screen bg-gradient-to-br from-gray-800 to-gray-900 p-4 md:p-5 flex flex-col md:flex-row gap-4">
       {/* Mobile Tabs */}
       {isMobile && (
         <div className="flex bg-gray-700 rounded-lg shadow-lg p-1 mb-2">
@@ -77,7 +77,7 @@ const App = () => {
 
       {/* Left Editor Panel */}
       <div
-        className={`bg-gray-900 rounded-2xl shadow-xl p-4 flex flex-col relative ${
+        className={`bg-gray-900 rounded-2xl shadow-xl p-4 flex flex-col ${
           isMobile
             ? activeTab === "editor"
               ? "flex flex-col h-[70vh]"
@@ -89,26 +89,29 @@ const App = () => {
           <Edit3 size={20} />
           Write Your Code
         </h2>
-        <div className="flex-1 w-full h-full overflow-auto rounded-lg border border-gray-700 min-h-[200px]">
-          <Editor
-            value={code}
-            onValueChange={setCode}
-            highlight={(code) =>
-              prism.highlight(code, prism.languages.javascript, "javascript")
-            }
-            padding={12}
-            style={{
-              fontFamily: "Fira Code, monospace",
-              fontSize: 14,
-              color: "white",
-              minHeight: "100%",
-              height: "100%",
-              boxSizing: "border-box",
-            }}
-            textareaClassName="h-full"
-            preClassName="h-full"
-          />
+        
+        {/* Editor container with proper scrolling */}
+        <div className="flex-1 min-h-0 flex flex-col">
+          <div className="flex-1 overflow-auto rounded-lg border border-gray-700">
+            <Editor
+              value={code}
+              onValueChange={setCode}
+              highlight={(code) =>
+                prism.highlight(code, prism.languages.javascript, "javascript")
+              }
+              padding={12}
+              style={{
+                fontFamily: "Fira Code, monospace",
+                fontSize: 14,
+                color: "white",
+                minHeight: "100%",
+              }}
+              textareaClassName="h-full"
+              preClassName="h-full overflow-auto"
+            />
+          </div>
         </div>
+        
         <div className="mt-4 md:absolute md:bottom-8 md:right-10 md:mt-0">
           <Button
             onClick={handleSubmit}
@@ -127,14 +130,14 @@ const App = () => {
         </div>
       </div>
 
-      {/* Right Panel - Fixed Scrolling */}
+      {/* Right Panel */}
       <div
-        className={`rounded-2xl shadow-xl p-4 md:p-5 overflow-hidden ${
+        className={`rounded-2xl shadow-xl p-4 md:p-5 ${
           isMobile
             ? activeTab === "review"
               ? "flex flex-col h-[70vh]"
               : "hidden"
-            : "flex-1 flex flex-col"
+            : "flex-1 flex flex-col min-h-0"
         } bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700`}
       >
         <div className="flex items-center justify-between mb-3">
@@ -151,27 +154,29 @@ const App = () => {
             </button>
           )}
         </div>
-
+        
         {/* Scrollable content container */}
-        <div className="flex-1 overflow-auto">
-          <div className="prose prose-invert prose-sm max-w-none text-gray-200">
-            {review ? (
-              <Markdown rehypePlugins={[rehypeHighlight]}>{review}</Markdown>
-            ) : (
-              <div className="text-gray-400 italic text-center py-8 h-full flex flex-col items-center justify-center">
-                <MessageSquare size={48} className="text-gray-600 mb-3" />
-                <p className="text-lg">
-                  {isLoading
-                    ? "Generating review..."
-                    : "Submit your code to get AI feedback"}
-                </p>
-                {!isLoading && (
-                  <p className="text-sm mt-2 text-gray-500">
-                    Your code review will appear here
+        <div className="flex-1 overflow-hidden flex flex-col">
+          <div className="flex-1 overflow-y-auto">
+            <div className="prose prose-invert prose-sm max-w-none text-gray-200">
+              {review ? (
+                <Markdown rehypePlugins={[rehypeHighlight]}>{review}</Markdown>
+              ) : (
+                <div className="text-gray-400 italic text-center py-8 h-full flex flex-col items-center justify-center">
+                  <MessageSquare size={48} className="text-gray-600 mb-3" />
+                  <p className="text-lg">
+                    {isLoading
+                      ? "Generating review..."
+                      : "Submit your code to get AI feedback"}
                   </p>
-                )}
-              </div>
-            )}
+                  {!isLoading && (
+                    <p className="text-sm mt-2 text-gray-500">
+                      Your code review will appear here
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
