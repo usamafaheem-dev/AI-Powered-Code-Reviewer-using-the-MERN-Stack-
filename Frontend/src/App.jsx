@@ -28,9 +28,11 @@ const App = () => {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.post("http://localhost:3000/ai/get-review/", {
-        code,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/ai/get-review/`,
+        { code }
+      );
+      console.log("Response:", response.data);
       if (response.data.success) {
         setReview(response.data.response);
         if (isMobile) setActiveTab("review");
@@ -49,8 +51,8 @@ const App = () => {
         <div className="flex bg-gray-700 rounded-lg shadow-lg p-1 mb-2">
           <button
             className={`flex items-center justify-center flex-1 py-2 px-4 rounded-md transition-colors ${
-              activeTab === "editor" 
-                ? "bg-blue-600 text-white font-medium shadow-md" 
+              activeTab === "editor"
+                ? "bg-blue-600 text-white font-medium shadow-md"
                 : "text-gray-300 bg-gray-800"
             }`}
             onClick={() => setActiveTab("editor")}
@@ -60,8 +62,8 @@ const App = () => {
           </button>
           <button
             className={`flex items-center justify-center flex-1 py-2 px-4 rounded-md transition-colors ${
-              activeTab === "review" 
-                ? "bg-blue-600 text-white font-medium shadow-md" 
+              activeTab === "review"
+                ? "bg-blue-600 text-white font-medium shadow-md"
                 : "text-gray-300 bg-gray-800"
             }`}
             onClick={() => review && setActiveTab("review")}
@@ -74,10 +76,12 @@ const App = () => {
       )}
 
       {/* Left Editor Panel */}
-      <div 
+      <div
         className={`bg-gray-900 rounded-2xl shadow-xl p-4 flex flex-col relative ${
-          isMobile 
-            ? activeTab === "editor" ? "flex flex-col h-[70vh]" : "hidden" 
+          isMobile
+            ? activeTab === "editor"
+              ? "flex flex-col h-[70vh]"
+              : "hidden"
             : "flex-1"
         }`}
       >
@@ -99,7 +103,7 @@ const App = () => {
               color: "white",
               minHeight: "100%",
               height: "100%",
-              boxSizing: "border-box"
+              boxSizing: "border-box",
             }}
             textareaClassName="h-full"
             preClassName="h-full"
@@ -124,10 +128,12 @@ const App = () => {
       </div>
 
       {/* Right Panel - Fixed Scrolling */}
-      <div 
+      <div
         className={`rounded-2xl shadow-xl p-4 md:p-5 overflow-hidden ${
-          isMobile 
-            ? activeTab === "review" ? "flex flex-col h-[70vh]" : "hidden" 
+          isMobile
+            ? activeTab === "review"
+              ? "flex flex-col h-[70vh]"
+              : "hidden"
             : "flex-1 flex flex-col"
         } bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700`}
       >
@@ -137,7 +143,7 @@ const App = () => {
             AI Feedback
           </h2>
           {isMobile && review && (
-            <button 
+            <button
               onClick={() => setActiveTab("editor")}
               className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors"
             >
@@ -145,7 +151,7 @@ const App = () => {
             </button>
           )}
         </div>
-        
+
         {/* Scrollable content container */}
         <div className="flex-1 overflow-auto">
           <div className="prose prose-invert prose-sm max-w-none text-gray-200">
@@ -154,9 +160,15 @@ const App = () => {
             ) : (
               <div className="text-gray-400 italic text-center py-8 h-full flex flex-col items-center justify-center">
                 <MessageSquare size={48} className="text-gray-600 mb-3" />
-                <p className="text-lg">{isLoading ? "Generating review..." : "Submit your code to get AI feedback"}</p>
+                <p className="text-lg">
+                  {isLoading
+                    ? "Generating review..."
+                    : "Submit your code to get AI feedback"}
+                </p>
                 {!isLoading && (
-                  <p className="text-sm mt-2 text-gray-500">Your code review will appear here</p>
+                  <p className="text-sm mt-2 text-gray-500">
+                    Your code review will appear here
+                  </p>
                 )}
               </div>
             )}
